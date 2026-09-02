@@ -4,6 +4,8 @@ A Codex-oriented project knowledge closeout Skill. It keeps README files, docs, 
 
 It is not a generic formatter and does not maintain personal Obsidian Vaults, deploy software, delete files, or perform other external writes.
 
+> **New to Codex or Skills?** A Chinese, beginner-friendly guide is available at [BEGINNER-GUIDE.zh-CN.md](docs/BEGINNER-GUIDE.zh-CN.md).
+
 ## Install
 
 Use the bundled Codex installer:
