@@ -1,6 +1,6 @@
 ---
 name: neat-freak
-description: "Use when a Codex task needs either a minimal continuation handoff or full end-of-session knowledge cleanup across project README/docs, AGENTS.md, handoff notes, and reusable skill lessons; trigger on a standalone nf or /nf cleanup command, /neat, /sync, tidy up docs, clean up docs, 整理一下, 同步一下, 收尾, compact failed, new-window handoff, stale docs, or conflicting memories. Do not use for personal knowledge vault maintenance; use that vault's dedicated workflow instead."
+description: "Use when a Codex task needs either a minimal continuation handoff or full end-of-session knowledge cleanup across project README/docs, AGENTS.md, handoff notes, and reusable skill lessons; trigger on a standalone nf or /nf cleanup command, /neat, /sync, tidy up docs, clean up docs, 整理一下, 同步一下, 收尾, compact failed, new-window handoff, stale docs, or conflicting memories. Do not use for Obsidian Vault content maintenance; use that vault's dedicated workflow instead. Workbench code, starter packaging and repository documentation remain project work."
 license: MIT
 metadata:
   source: https://github.com/KKKKhazix/khazix-skills/tree/main/neat-freak
@@ -15,7 +15,7 @@ metadata:
 ## Scope And Boundaries
 
 - 管理项目文档、项目/全局 `AGENTS.md`、三层 handoff 和正式 Skill；不保存一次性项目事实到 Skill。
-- 个人知识库 Vault 应由其专用知识管理工作流维护。检测到 Obsidian Vault 时停止项目式盘点，不创建 handoff、不重组 Vault Markdown。
+- 用户指定路径决定目标。Obsidian Vault 内容交给其专用知识管理工作流，不创建项目 handoff、不重组笔记；Workbench 代码、Starter 打包和仓库文档仍可按项目收尾。盘点脚本识别当前目录、上层和嵌套 Vault，跳过符号链接，不因仓库任务打开个人知识库。
 - 发布、部署、删除、外部写入和生产可见操作仍需用户明确请求。
 - 外部目录、telemetry 或仪表盘是独立维护面；技能变化不构成刷新授权。
 

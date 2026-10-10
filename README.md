@@ -41,6 +41,12 @@
 - 只读文档盘点脚本及标准库测试。
 - Codex 指令与项目文档的路径和优先级说明。
 
+## 项目与知识库边界
+
+- 仓库文档、Workbench 代码和 Starter 打包仍属于项目收尾。
+- Vault 根目录或其内部目录交给知识库专项工作流，不创建项目 handoff。
+- 只读盘点跳过仓库内嵌 Vault、依赖目录和符号链接，避免误读范围外笔记。
+
 ## 来源与许可
 
 本仓库基于 KKKKhazix/khazix-skills 的 neat-freak（MIT）进行 Codex-first 改造。保留原始 MIT 许可与版权声明；详细来源见 NOTICE.md。

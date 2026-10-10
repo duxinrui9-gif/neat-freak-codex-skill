@@ -2,7 +2,7 @@
 
 A Codex-oriented project knowledge closeout Skill. It keeps README files, docs, AGENTS.md, handoff notes, and verified project facts aligned, then decides whether a lesson is reusable enough to become a Skill rule.
 
-It is not a generic formatter and does not maintain personal Obsidian Vaults, deploy software, delete files, or perform other external writes.
+It is not a generic formatter and does not maintain Obsidian Vault contents, deploy software, delete files, or perform other external writes.
 
 > **New to Codex or Skills?** A Chinese, beginner-friendly guide is available at [BEGINNER-GUIDE.zh-CN.md](docs/BEGINNER-GUIDE.zh-CN.md).
 
@@ -31,6 +31,10 @@ The Skill has two modes:
 - full cleanup: document inventory, stale-information cleanup, three-layer handoff maintenance, and evidence-based Skill lessons.
 
 See skills/neat-freak/SKILL.md for the complete instructions.
+
+## Project and Vault Boundaries
+
+Use Neat Freak for project repositories, including Workbench development and Starter packaging. Use the selected Vault's dedicated knowledge workflow for Vault contents. The read-only inventory rejects Vault roots and their subdirectories, skips nested Vaults and symbolic links, and does not implicitly open a personal Vault.
 
 ## Attribution and License
 

@@ -31,10 +31,46 @@ class InventoryDocsTests(unittest.TestCase):
     def test_rejects_personal_vault(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            root.joinpath(".obsidian").mkdir()
+            root.joinpath("00_知识库配置.md").write_text("---\n---\n", encoding="utf-8")
+            root.joinpath("90_System").mkdir()
+            root.joinpath("90_System/知识库自增长说明.md").write_text("# Vault", encoding="utf-8")
             result = self.run_inventory(root)
             self.assertEqual(result.returncode, 3)
             self.assertIn("dedicated knowledge-management workflow", result.stderr)
+
+    def test_rejects_subdirectory_of_generic_vault(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / ".obsidian").mkdir()
+            (root / "notes").mkdir()
+            self.assertEqual(self.run_inventory(root / "notes").returncode, 3)
+
+    def test_workbench_repository_skips_nested_vault(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "README.md").write_text("Project documentation")
+            (root / "starter-vault/90_System").mkdir(parents=True)
+            (root / "starter-vault/00_知识库配置.md").write_text("config")
+            (root / "starter-vault/90_System/知识库自增长说明.md").write_text("vault")
+            (root / ".venv").mkdir()
+            (root / ".venv/noise.md").write_text("noise")
+            result = self.run_inventory(root)
+            self.assertEqual(result.returncode, 0)
+            report = json.loads(result.stdout)
+            self.assertEqual([x['path'] for x in report['markdown_candidates']], ['README.md'])
+
+    def test_does_not_read_external_key_document_symlink(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            parent = Path(temporary)
+            root = parent / "project"
+            root.mkdir()
+            (parent / "external.md").write_text("最近 private outside scope")
+            (root / "README.md").symlink_to(parent / "external.md")
+            result = self.run_inventory(root)
+            report = json.loads(result.stdout)
+            self.assertEqual(report['markdown_candidates'], [])
+            self.assertEqual(report['key_documents'][0]['scan_skipped'], 'symlink_or_outside_root')
+            self.assertNotIn('relative_time_matches', report['key_documents'][0])
 
 
 if __name__ == "__main__":

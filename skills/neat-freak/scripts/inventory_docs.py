@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 
-PRUNED_DIRS = {".git", ".next", ".turbo", ".vercel", ".cache", "__pycache__", "build", "coverage", "dist", "node_modules"}
+PRUNED_DIRS = {".git", ".next", ".turbo", ".vercel", ".cache", ".venv", ".obsidian", "__pycache__", "build", "coverage", "dist", "node_modules"}
 KEY_DOCUMENTS = ("README.md", "AGENTS.md", "AGENTS.override.md", "docs/README.md", "docs/handoff.md")
 RELATIVE_TIME_RE = re.compile(r"今天|昨天|刚刚|最近|上周|\btoday\b|\byesterday\b|\brecently\b", re.IGNORECASE)
 MAX_CANDIDATES = 200
@@ -19,7 +19,11 @@ MAX_KEY_READ_BYTES = 512 * 1024
 
 
 def is_personal_vault(root: Path) -> bool:
-    return (root / ".obsidian").is_dir()
+    return (root / ".obsidian").is_dir() or ((root / "00_知识库配置.md").is_file() and (root / "90_System" / "知识库自增长说明.md").is_file())
+
+
+def containing_vault(root: Path) -> Path | None:
+    return next((p for p in (root, *root.parents) if is_personal_vault(p)), None)
 
 
 def markdown_inventory(root: Path) -> tuple[list[dict], int]:
@@ -27,11 +31,13 @@ def markdown_inventory(root: Path) -> tuple[list[dict], int]:
     omitted = 0
     for current_root, directories, filenames in os.walk(root, topdown=True):
         current = Path(current_root)
-        directories[:] = sorted(directory for directory in directories if directory not in PRUNED_DIRS)
+        directories[:] = sorted(directory for directory in directories if directory not in PRUNED_DIRS and not (current / directory).is_symlink() and not is_personal_vault(current / directory))
         for filename in sorted(filenames):
             if not filename.endswith(".md"):
                 continue
             path = current / filename
+            if path.is_symlink():
+                continue
             relative = path.relative_to(root).as_posix()
             if len(candidates) >= MAX_CANDIDATES:
                 omitted += 1
@@ -47,6 +53,9 @@ def key_document_report(root: Path) -> list[dict]:
     report: list[dict] = []
     for relative in KEY_DOCUMENTS:
         path = root / relative
+        if path.is_symlink() or not path.resolve().is_relative_to(root):
+            report.append({"path": relative, "exists": False, "scan_skipped": "symlink_or_outside_root"})
+            continue
         item: dict = {"path": relative, "exists": path.is_file()}
         if not path.is_file():
             report.append(item)
@@ -75,8 +84,8 @@ def main() -> int:
     if not root.is_dir():
         print(f"Project root not found: {root}", file=sys.stderr)
         return 2
-    if is_personal_vault(root):
-        print("Obsidian Vault detected; use that Vault's dedicated knowledge-management workflow instead.", file=sys.stderr)
+    if containing_vault(root):
+        print("Obsidian Vault content detected; use that Vault's dedicated knowledge-management workflow instead.", file=sys.stderr)
         return 3
 
     candidates, omitted = markdown_inventory(root)

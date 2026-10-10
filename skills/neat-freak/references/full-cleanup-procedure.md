@@ -10,7 +10,7 @@ Run:
 python3 scripts/inventory_docs.py --root <project-root> --format json
 ```
 
-The script is read-only and prunes dependency, build, cache, deployment and Git directories. If it identifies an Obsidian Vault, stop and use that Vault's dedicated knowledge-management workflow instead.
+The script is read-only and prunes dependency, build, cache, deployment and Git directories, including `.venv` and `.obsidian`. It rejects a Vault root or its subdirectory, skips nested Vaults in project repositories, and does not follow Markdown or directory symlinks. If it identifies an Obsidian Vault, stop and use that Vault's dedicated knowledge-management workflow instead.
 
 For each affected project root, first read only existing `README.md`, `AGENTS.md`, `AGENTS.override.md`, `docs/README.md`, and `docs/handoff.md`. Read other Markdown only when the inventory, filename, current diff, or this matrix makes it relevant. Record each inspected file as `updated` or `no change`.
 
